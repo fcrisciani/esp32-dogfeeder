@@ -3,6 +3,10 @@ substitutions:
   name: esphome-dog-feeder
   friendly_name: dog feeder
 
+# Include other configuration files
+packages:
+  scoop: !include scoop.yaml
+
 # ESPHome configuration
 esphome:
   name: ${name}
@@ -66,9 +70,6 @@ number:
       - servo.write: 
           id: my_servo
           level: !lambda ' return x / 100.0;'
-
-# Import configuration from scoop.yaml
-import: scoop.yaml
 
 # Sync time with Home Assistant.
 time:
