@@ -68,9 +68,7 @@ number:
           level: !lambda ' return x / 100.0;'
 
 # Import configuration from scoop.yaml
-dashboard_import:
-  package_import_url: /config/esphome/smart_feeder/scoop.yaml
-  import_full_config: true
+import: scoop.yaml
 
 # Sync time with Home Assistant.
 time:
