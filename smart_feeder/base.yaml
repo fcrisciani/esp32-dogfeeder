@@ -28,11 +28,6 @@ web_server:
 # Enable captive portal for easier Wi-Fi setup
 captive_portal:
 
-# Import configuration from GitHub
-dashboard_import:
-  package_import_url: github://fcrisciani/esp32-dogfeeder/smart_feeder/base.yaml@main
-  import_full_config: true
-
 # Enable Home Assistant API for integration
 api:
 
