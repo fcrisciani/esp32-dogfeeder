@@ -1,0 +1,126 @@
+# Substitutions for reusable variables
+substitutions:
+  name: esphome-dog-feeder
+  friendly_name: dog feeder
+
+# ESPHome configuration
+esphome:
+  name: ${name}
+  friendly_name: ${friendly_name}
+  name_add_mac_suffix: false
+  project:
+    name: dogfeeder.esphome
+    version: '1.0'
+  on_boot:
+    # Wait 10 seconds on boot
+    then:
+      - logger.log: reset position!
+      - servo.write: 
+          id: my_servo
+          level: -100%
+
+# ESP32 board and framework configuration
+esp32:
+  board: esp32dev
+  framework:
+    type: arduino
+
+# Enable logging for debugging
+logger:
+
+# Enable a web server for device monitoring
+web_server:
+
+# Wi-Fi configuration
+wifi:
+  # Wi-Fi SSID from secrets
+  ssid: !secret wifi_ssid
+  # Wi-Fi password from secrets
+  password: !secret wifi_password
+
+# Enable captive portal for easier Wi-Fi setup
+captive_portal:
+
+# Import configuration from GitHub
+dashboard_import:
+  package_import_url: github://fcrisciani/esp32-dogfeeder/smart_feeder/base.yaml@main
+  import_full_config: true
+
+# Enable Home Assistant API for integration
+api:
+
+# Enable OTA updates for firmware updates
+ota:
+  # Specify OTA platform
+  platform: esphome
+
+# Example configuration entry
+servo:
+  - id: my_servo
+    output: pwm_output
+
+# Example output platform
+# On ESP32, use ledc output
+output:
+  - platform: ledc
+    id: pwm_output
+    pin: GPIO27
+    frequency: 50 Hz
+
+# Slider configuration for controlling servo position
+number:
+  - platform: template
+    name: "Servo Position"
+    id: servo_position
+    # Minimum slider value
+    min_value: -100
+    # Maximum slider value
+    max_value: 100
+    # Slider step size
+    initial_value: -100
+    optimistic: True
+    step: 1
+    on_value:
+      - servo.write: 
+          id: my_servo
+          level: !lambda ' return x / 100.0;'
+
+# Button configuration
+button:
+  # Button to gradually change the servo position from -100 to 100 and back
+  - platform: template
+    name: "Gradually Change Servo Position"
+    on_press:
+      then:
+        # Log the start of gradual servo position change
+        - logger.log: "Starting gradual servo position change from -100 to 100"
+        # Reset position to -100 at the start
+        - lambda: |-
+            id(servo_position).publish_state(-100.0);
+        # Repeat 200 times to increment the position
+        - repeat:
+            count: 200
+            then:
+              - lambda: |-
+                  float position = -100.0 + (id(servo_position).state + 100.0); // Start from current progress
+                  position = std::min(position + 1.0, 100.0); // Ensure we don't exceed 100
+                  id(servo_position).publish_state(position);
+              # Delay to spread over 20 seconds (20s / 200 steps)
+              - delay: 50ms
+        # Wait for 3 seconds
+        - delay: 3s
+        # Log the start of gradual servo position change back to -100
+        - logger.log: "Starting gradual servo position change back to -100"
+        # Reset position to 100 before decrementing
+        - lambda: |-
+            id(servo_position).publish_state(100.0);
+        # Repeat 200 times to decrement the position
+        - repeat:
+            count: 200
+            then:
+              - lambda: |-
+                  float position = 100.0 - (100.0 - id(servo_position).state); // Start from current progress
+                  position = std::max(position - 1.0, -100.0); // Ensure we don't go below -100
+                  id(servo_position).publish_state(position);
+              # Delay to spread over 20 seconds (20s / 200 steps)
+              - delay: 50ms
