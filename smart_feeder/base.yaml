@@ -72,45 +72,10 @@ number:
           id: my_servo
           level: !lambda ' return x / 100.0;'
 
-# Button configuration
-button:
-  # Button to gradually change the servo position from -100 to 100 and back
-  - platform: template
-    name: "Gradually Change Servo Position"
-    on_press:
-      then:
-        # Log the start of gradual servo position change
-        - logger.log: "Starting gradual servo position change from -100 to 100"
-        # Reset position to -100 at the start
-        - lambda: |-
-            id(servo_position).publish_state(-100.0);
-        # Repeat 200 times to increment the position
-        - repeat:
-            count: 200
-            then:
-              - lambda: |-
-                  float position = -100.0 + (id(servo_position).state + 100.0); // Start from current progress
-                  position = std::min(position + 1.0, 100.0); // Ensure we don't exceed 100
-                  id(servo_position).publish_state(position);
-              # Delay to spread over 20 seconds (20s / 200 steps)
-              - delay: 50ms
-        # Wait for 3 seconds
-        - delay: 3s
-        # Log the start of gradual servo position change back to -100
-        - logger.log: "Starting gradual servo position change back to -100"
-        # Reset position to 100 before decrementing
-        - lambda: |-
-            id(servo_position).publish_state(100.0);
-        # Repeat 200 times to decrement the position
-        - repeat:
-            count: 200
-            then:
-              - lambda: |-
-                  float position = 100.0 - (100.0 - id(servo_position).state); // Start from current progress
-                  position = std::max(position - 1.0, -100.0); // Ensure we don't go below -100
-                  id(servo_position).publish_state(position);
-              # Delay to spread over 20 seconds (20s / 200 steps)
-              - delay: 50ms
+# Import configuration from scoop.yaml
+dashboard_import:
+  package_import_url: github://fcrisciani/esp32-dogfeeder/smart_feeder/scoop.yaml@main
+  import_full_config: true
 
 # Sync time with Home Assistant.
 time:
