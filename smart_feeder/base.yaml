@@ -69,7 +69,7 @@ number:
 
 # Import configuration from scoop.yaml
 dashboard_import:
-  package_import_url: github://fcrisciani/esp32-dogfeeder/smart_feeder/scoop.yaml@main
+  package_import_url: /config/esphome/smart_feeder/scoop.yaml
   import_full_config: true
 
 # Sync time with Home Assistant.
