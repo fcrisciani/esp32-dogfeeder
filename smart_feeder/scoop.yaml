@@ -2,11 +2,11 @@ globals:
   - id: quick_servo_target
     type: float
     restore_value: no
-    initial_value: 90.0
+    initial_value: '90.0'
   - id: quick_servo_return
     type: float
     restore_value: no
-    initial_value: -90.0
+    initial_value: '-90.0'
 
 # Button configuration
 button:
