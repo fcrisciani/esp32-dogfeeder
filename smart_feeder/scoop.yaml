@@ -1,3 +1,13 @@
+globals:
+  - id: quick_servo_target
+    type: float
+    restore_value: no
+    initial_value: '90.0'
+  - id: quick_servo_return
+    type: float
+    restore_value: no
+    initial_value: '-90.0'
+
 # Button configuration
 button:
   # Button to gradually change the servo position from -100 to 100 and back
@@ -38,15 +48,15 @@ button:
               # Delay to spread over 20 seconds (20s / 200 steps)
               - delay: 50ms
 
-  # Button to move the servo to -90 degrees and back to -100
+  # Button to move the servo using global degree variables
   - platform: template
     name: "Quick Servo Movement"
     on_press:
       then:
-        - logger.log: "Moving servo to -90 degrees"
+        - logger.log: !lambda "return \"Moving servo to \" + String(id(quick_servo_target)) + \" degrees\";"
         - lambda: |-
-            id(servo_position).publish_state(90.0);
+            id(servo_position).publish_state(id(quick_servo_target));
         - delay: 3s
-        - logger.log: "Returning servo to -90 degrees"
+        - logger.log: !lambda "return \"Returning servo to \" + String(id(quick_servo_return)) + \" degrees\";"
         - lambda: |-
-            id(servo_position).publish_state(-90.0);
+            id(servo_position).publish_state(id(quick_servo_return));
