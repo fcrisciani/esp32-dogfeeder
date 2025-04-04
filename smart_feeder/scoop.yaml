@@ -2,11 +2,11 @@ globals:
   - id: quick_servo_target
     type: float
     restore_value: no
-    initial_value: '90.0'
+    initial_value: 90.0
   - id: quick_servo_return
     type: float
     restore_value: no
-    initial_value: '-90.0'
+    initial_value: -90.0
 
 # Button configuration
 button:
@@ -53,10 +53,8 @@ button:
     name: "Quick Servo Movement"
     on_press:
       then:
-        - logger.log: !lambda "return \"Moving servo to \" + String(id(quick_servo_target)) + \" degrees\";"
         - lambda: |-
             id(servo_position).publish_state(id(quick_servo_target));
         - delay: 3s
-        - logger.log: !lambda "return \"Returning servo to \" + String(id(quick_servo_return)) + \" degrees\";"
         - lambda: |-
             id(servo_position).publish_state(id(quick_servo_return));
