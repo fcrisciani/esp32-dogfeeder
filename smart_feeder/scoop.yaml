@@ -37,3 +37,16 @@ button:
                   id(servo_position).publish_state(position);
               # Delay to spread over 20 seconds (20s / 200 steps)
               - delay: 50ms
+
+  # Button to move the servo to -90 degrees and back to -100
+  - platform: template
+    name: "Quick Servo Movement"
+    on_press:
+      then:
+        - logger.log: "Moving servo to -90 degrees"
+        - lambda: |-
+            id(servo_position).publish_state(-90.0);
+        - delay: 3s
+        - logger.log: "Returning servo to -100 degrees"
+        - lambda: |-
+            id(servo_position).publish_state(-100.0);
