@@ -45,8 +45,8 @@ button:
       then:
         - logger.log: "Moving servo to -90 degrees"
         - lambda: |-
-            id(servo_position).publish_state(-90.0);
+            id(servo_position).publish_state(90.0);
         - delay: 3s
-        - logger.log: "Returning servo to -100 degrees"
+        - logger.log: "Returning servo to -90 degrees"
         - lambda: |-
-            id(servo_position).publish_state(-100.0);
+            id(servo_position).publish_state(-90.0);
