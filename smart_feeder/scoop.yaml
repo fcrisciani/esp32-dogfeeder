@@ -17,6 +17,9 @@ number:
     max_value: 100
     step: 1
     initial_value: 90
+    set_action:
+      - lambda: |-
+          id(quick_servo_target) = x;
     on_value:
       - lambda: |-
           id(quick_servo_target) = x;
@@ -28,6 +31,9 @@ number:
     max_value: 100
     step: 1
     initial_value: -90
+    set_action:
+      - lambda: |-
+          id(quick_servo_return) = x;
     on_value:
       - lambda: |-
           id(quick_servo_return) = x;
