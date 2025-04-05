@@ -85,7 +85,7 @@ button:
       then:
         # Log the target position
         - logger.log: |-
-            sprintf("Moving servo to target position: %.1f", id(quick_servo_target));
+            sprintf("Moving servo to target position: %.1f", id(quick_servo_target).state);
         # Move servo to target position
         - lambda: |-
             id(servo_position).publish_state(id(quick_servo_target));
@@ -93,7 +93,7 @@ button:
         - delay: 5s
         # Log the return position
         - logger.log: |-
-            sprintf("Returning servo to position: %.1f", id(quick_servo_return));
+            sprintf("Returning servo to position: %.1f", id(quick_servo_return).state);
         # Move servo back to return position
         - lambda: |-
             id(servo_position).publish_state(id(quick_servo_return));
