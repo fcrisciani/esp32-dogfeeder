@@ -45,8 +45,6 @@ button:
     name: "Gradually Change Servo Position"
     on_press:
       then:
-        # Log the start of gradual servo position change
-        - logger.log: "Starting gradual servo position change from -100 to 100"
         # Reset position to -100 at the start
         - lambda: |-
             id(servo_position).publish_state(-100.0);
@@ -62,8 +60,6 @@ button:
               - delay: 50ms
         # Wait for 3 seconds
         - delay: 3s
-        # Log the start of gradual servo position change back to -100
-        - logger.log: "Starting gradual servo position change back to -100"
         # Reset position to 100 before decrementing
         - lambda: |-
             id(servo_position).publish_state(100.0);
@@ -83,17 +79,11 @@ button:
     name: "Move Servo and Return"
     on_press:
       then:
-        # Log the target position
-        - logger.log: |-
-            sprintf("Moving servo to target position: %.1f", id(quick_servo_target).state);
         # Move servo to target position
         - lambda: |-
             id(servo_position).publish_state(id(quick_servo_target));
         # Wait for 5 seconds
         - delay: 5s
-        # Log the return position
-        - logger.log: |-
-            sprintf("Returning servo to position: %.1f", id(quick_servo_return).state);
         # Move servo back to return position
         - lambda: |-
             id(servo_position).publish_state(id(quick_servo_return));
