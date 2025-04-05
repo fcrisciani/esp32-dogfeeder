@@ -8,6 +8,30 @@ globals:
     restore_value: no
     initial_value: '-90.0'
 
+# Number components for Home Assistant UI
+number:
+  - platform: template
+    name: "Quick Servo Target Position"
+    id: quick_servo_target_ui
+    min_value: -100
+    max_value: 100
+    step: 1
+    initial_value: 90
+    on_value:
+      - lambda: |-
+          id(quick_servo_target) = x;
+
+  - platform: template
+    name: "Quick Servo Return Position"
+    id: quick_servo_return_ui
+    min_value: -100
+    max_value: 100
+    step: 1
+    initial_value: -90
+    on_value:
+      - lambda: |-
+          id(quick_servo_return) = x;
+
 # Button configuration
 button:
   # Button to gradually change the servo position from -100 to 100 and back
@@ -48,13 +72,22 @@ button:
               # Delay to spread over 20 seconds (20s / 200 steps)
               - delay: 50ms
 
-  # Button to move the servo using global degree variables
+  # Button to move servo to target position, wait, and return
   - platform: template
-    name: "Quick Servo Movement"
+    name: "Move Servo and Return"
     on_press:
       then:
+        # Log the target position
+        - logger.log: |-
+            sprintf("Moving servo to target position: %.1f", id(quick_servo_target));
+        # Move servo to target position
         - lambda: |-
             id(servo_position).publish_state(id(quick_servo_target));
-        - delay: 3s
+        # Wait for 5 seconds
+        - delay: 5s
+        # Log the return position
+        - logger.log: |-
+            sprintf("Returning servo to position: %.1f", id(quick_servo_return));
+        # Move servo back to return position
         - lambda: |-
             id(servo_position).publish_state(id(quick_servo_return));
