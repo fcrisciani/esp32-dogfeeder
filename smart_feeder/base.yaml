@@ -17,9 +17,9 @@ esphome:
     name: dogfeeder.esphome
     version: '1.0'
   on_boot:
-    # Wait 10 seconds on boot
+    priority: 500  # Lower priority than our UI update
     then:
-      - logger.log: reset position!
+      - logger.log: "reset position!"
       - servo.write: 
           id: my_servo
           level: -100%
