@@ -1,0 +1,30 @@
+# Scheduled feeding times
+time:
+  - platform: homeassistant
+    id: homeassistant_time
+
+# Scheduled feeding automations
+automation:
+  - id: morning_feed
+    description: "Morning feeding time"
+    trigger:
+      - platform: time
+        at: "07:00:00"
+    action:
+      - lambda: |-
+          id(servo_position).publish_state(id(quick_servo_target));
+      - delay: 5s
+      - lambda: |-
+          id(servo_position).publish_state(id(quick_servo_return));
+      
+  - id: evening_feed
+    description: "Evening feeding time"
+    trigger:
+      - platform: time
+        at: "18:00:00"
+    action:
+      - lambda: |-
+          id(servo_position).publish_state(id(quick_servo_target));
+      - delay: 5s
+      - lambda: |-
+          id(servo_position).publish_state(id(quick_servo_return));

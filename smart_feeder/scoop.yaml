@@ -20,9 +20,6 @@ number:
     set_action:
       - lambda: |-
           id(quick_servo_target) = x;
-    on_value:
-      - lambda: |-
-          id(quick_servo_target) = x;
 
   - platform: template
     name: "Quick Servo Return Position"
@@ -32,9 +29,6 @@ number:
     step: 1
     initial_value: -90
     set_action:
-      - lambda: |-
-          id(quick_servo_return) = x;
-    on_value:
       - lambda: |-
           id(quick_servo_return) = x;
 
@@ -53,8 +47,9 @@ button:
             count: 200
             then:
               - lambda: |-
-                  float position = -100.0 + (id(servo_position).state + 100.0); // Start from current progress
-                  position = std::min(position + 1.0, 100.0); // Ensure we don't exceed 100
+                  // Simplified calculation: just add 1 to current position
+                  float position = id(servo_position).state + 1.0;
+                  position = std::min(position, 100.0); // Safety check
                   id(servo_position).publish_state(position);
               # Delay to spread over 20 seconds (20s / 200 steps)
               - delay: 50ms
@@ -68,8 +63,9 @@ button:
             count: 200
             then:
               - lambda: |-
-                  float position = 100.0 - (100.0 - id(servo_position).state); // Start from current progress
-                  position = std::max(position - 1.0, -100.0); // Ensure we don't go below -100
+                  // Simplified calculation: just subtract 1 from current position
+                  float position = id(servo_position).state - 1.0;
+                  position = std::max(position, -100.0); // Safety check
                   id(servo_position).publish_state(position);
               # Delay to spread over 20 seconds (20s / 200 steps)
               - delay: 50ms
@@ -79,11 +75,13 @@ button:
     name: "Move Servo and Return"
     on_press:
       then:
-        # Move servo to target position
+        # Move servo to target position with safety bounds check
         - lambda: |-
-            id(servo_position).publish_state(id(quick_servo_target));
+            float target = std::min(std::max(id(quick_servo_target), -100.0f), 100.0f);
+            id(servo_position).publish_state(target);
         # Wait for 5 seconds
         - delay: 5s
-        # Move servo back to return position
+        # Move servo back to return position with safety bounds check
         - lambda: |-
-            id(servo_position).publish_state(id(quick_servo_return));
+            float return_pos = std::min(std::max(id(quick_servo_return), -100.0f), 100.0f);
+            id(servo_position).publish_state(return_pos);

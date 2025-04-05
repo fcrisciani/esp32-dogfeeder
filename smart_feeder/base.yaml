@@ -6,6 +6,7 @@ substitutions:
 # Include other configuration files
 packages:
   scoop: !include scoop.yaml
+  schedules: !include schedules.yaml
 
 # ESPHome configuration
 esphome:
@@ -44,6 +45,9 @@ ota:
 servo:
   - id: my_servo
     output: pwm_output
+    min_level: -1.0
+    max_level: 1.0
+    restore: true  # Add this to remember last position on restart
 
 # Example output platform
 # On ESP32, use ledc output
@@ -52,24 +56,27 @@ output:
     id: pwm_output
     pin: GPIO27
     frequency: 50 Hz
+    # Add these for more precise control
+    min_power: 0.03  # 3% duty cycle (typical servo min is ~1ms out of 20ms)
+    max_power: 0.12  # 12% duty cycle (typical servo max is ~2ms out of 20ms)
 
 # Slider configuration for controlling servo position
 number:
   - platform: template
     name: "Servo Position"
     id: servo_position
-    # Minimum slider value
-    min_value: -100
-    # Maximum slider value
-    max_value: 100
-    # Slider step size
-    initial_value: -100
-    optimistic: True
-    step: 1
+    # Minimum slider valueue: -100
+    step: 1 slider value
     on_value:
       - servo.write: 
           id: my_servo
-          level: !lambda ' return x / 100.0;'
+          level: !lambda ' return x / 100.0;'    optimistic: True
+
+# Sync time with Home Assistant.n_value:
+time:
+  - platform: homeassistant
+    id: homeassistant_time          level: !lambda ' return x / 100.0;'
+
 
 # Sync time with Home Assistant.
 time:
