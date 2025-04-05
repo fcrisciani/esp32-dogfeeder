@@ -1,41 +1,3 @@
-globals:
-  - id: quick_servo_target
-    type: float
-    restore_value: yes  # Change to yes to persist across reboots
-    initial_value: '90.0'
-  - id: quick_servo_return
-    type: float
-    restore_value: yes  # Change to yes to persist across reboots
-    initial_value: '-90.0'
-
-# Number components for Home Assistant UI
-number:
-  - platform: template
-    name: "Quick Servo Target Position"
-    id: quick_servo_target_ui
-    min_value: -100
-    max_value: 100
-    step: 1
-    initial_value: 90
-    optimistic: false  # Let ESPHome handle the state
-    set_action:
-      - lambda: |-
-          id(quick_servo_target) = x;
-          id(quick_servo_target_ui).publish_state(x);  # Update the UI state
-
-  - platform: template
-    name: "Quick Servo Return Position"
-    id: quick_servo_return_ui
-    min_value: -100
-    max_value: 100
-    step: 1
-    initial_value: -90
-    optimistic: false  # Let ESPHome handle the state
-    set_action:
-      - lambda: |-
-          id(quick_servo_return) = x;
-          id(quick_servo_return_ui).publish_state(x);  # Update the UI state
-
 # Button configuration
 button:
   # Button to gradually change the servo position from -100 to 100 and back
@@ -91,13 +53,3 @@ button:
             float return_pos = id(quick_servo_return);
             // Update the servo position
             id(servo_position).publish_state(return_pos);
-
-# Initialize UI components with stored values on startup
-esphome:
-  on_boot:
-    priority: 600  # After other components are initialized
-    then:
-      - lambda: |-
-          // Update UI components with stored global values
-          id(quick_servo_target_ui).publish_state(id(quick_servo_target));
-          id(quick_servo_return_ui).publish_state(id(quick_servo_return));
