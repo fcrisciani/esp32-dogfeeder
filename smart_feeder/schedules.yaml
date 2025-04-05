@@ -12,10 +12,13 @@ automation:
         at: "07:00:00"
     action:
       - lambda: |-
-          id(servo_position).publish_state(id(quick_servo_target));
+          // For globals, we access directly without .state
+          float target = id(quick_servo_target);
+          id(servo_position).publish_state(target);
       - delay: 5s
       - lambda: |-
-          id(servo_position).publish_state(id(quick_servo_return));
+          float return_pos = id(quick_servo_return);
+          id(servo_position).publish_state(return_pos);
       
   - id: evening_feed
     description: "Evening feeding time"
@@ -24,7 +27,9 @@ automation:
         at: "18:00:00"
     action:
       - lambda: |-
-          id(servo_position).publish_state(id(quick_servo_target));
+          float target = id(quick_servo_target);
+          id(servo_position).publish_state(target);
       - delay: 5s
       - lambda: |-
-          id(servo_position).publish_state(id(quick_servo_return));
+          float return_pos = id(quick_servo_return);
+          id(servo_position).publish_state(return_pos);

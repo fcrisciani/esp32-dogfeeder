@@ -20,6 +20,9 @@ number:
     set_action:
       - lambda: |-
           id(quick_servo_target) = x;
+          // Update UI state to reflect the new value
+          id(quick_servo_target_ui).publish_state(x);
+    optimistic: true
 
   - platform: template
     name: "Quick Servo Return Position"
@@ -31,6 +34,9 @@ number:
     set_action:
       - lambda: |-
           id(quick_servo_return) = x;
+          // Update UI state to reflect the new value
+          id(quick_servo_return_ui).publish_state(x);
+    optimistic: true
 
 # Button configuration
 button:
@@ -75,13 +81,15 @@ button:
     name: "Move Servo and Return"
     on_press:
       then:
-        # Move servo to target position with safety bounds check
+        # Move servo to target position
         - lambda: |-
-            float target = std::min(std::max(id(quick_servo_target), -100.0f), 100.0f);
+            float target = id(quick_servo_target);
+            // Update the servo position
             id(servo_position).publish_state(target);
         # Wait for 5 seconds
         - delay: 5s
-        # Move servo back to return position with safety bounds check
+        # Move servo back to return position
         - lambda: |-
-            float return_pos = std::min(std::max(id(quick_servo_return), -100.0f), 100.0f);
+            float return_pos = id(quick_servo_return);
+            // Update the servo position
             id(servo_position).publish_state(return_pos);
