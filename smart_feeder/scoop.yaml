@@ -59,40 +59,54 @@ button:
     name: "Wiggle Servo Movement"
     on_press:
       then:
+        # Start by moving to the initial position
         - lambda: |-
-            // Get starting and target positions
-            float start_pos = id(quick_servo_target);
-            float end_pos = id(quick_servo_return);
-            float current_pos = start_pos;
-            float wiggle_end_threshold = start_pos + 50.0;
-            
-            // Start by moving to the initial position
-            id(servo_position).publish_state(start_pos);
-            
-            // Wait for servo to get to initial position
-            delay(200);
-            
-            // Perform wiggles until we've moved 50 degrees
-            while (current_pos < wiggle_end_threshold) {
-              // Forward movement (bigger steps)
-              current_pos += 10.0;
-              id(servo_position).publish_state(current_pos);
-              delay(150);
-              
-              // Backward movement (smaller steps for net forward progress)
-              current_pos -= 5.0;
-              id(servo_position).publish_state(current_pos);
-              delay(150);
-            }
-            
-            // Complete movement to final position
-            id(servo_position).publish_state(end_pos);
-            
-            // Wait for 3 seconds
-            delay(3000);
-            
-            // Return to the starting position
-            id(servo_position).publish_state(start_pos);
-        # Return to the original position (redundant with lambda but kept for safety)
+            id(servo_position).publish_state(id(quick_servo_target));
+        # Wait for servo to get to initial position
+        - delay: 200ms
+        
+        # Perform a fixed number of wiggles (5 cycles)
+        # First wiggle
+        - lambda: |-
+            id(servo_position).publish_state(id(servo_position).state + 10.0);
+        - delay: 150ms
+        - lambda: |-
+            id(servo_position).publish_state(id(servo_position).state - 5.0);
+        - delay: 150ms
+        # Second wiggle
+        - lambda: |-
+            id(servo_position).publish_state(id(servo_position).state + 10.0);
+        - delay: 150ms
+        - lambda: |-
+            id(servo_position).publish_state(id(servo_position).state - 5.0);
+        - delay: 150ms
+        # Third wiggle
+        - lambda: |-
+            id(servo_position).publish_state(id(servo_position).state + 10.0);
+        - delay: 150ms
+        - lambda: |-
+            id(servo_position).publish_state(id(servo_position).state - 5.0);
+        - delay: 150ms
+        # Fourth wiggle
+        - lambda: |-
+            id(servo_position).publish_state(id(servo_position).state + 10.0);
+        - delay: 150ms
+        - lambda: |-
+            id(servo_position).publish_state(id(servo_position).state - 5.0);
+        - delay: 150ms
+        # Fifth wiggle
+        - lambda: |-
+            id(servo_position).publish_state(id(servo_position).state + 10.0);
+        - delay: 150ms
+        - lambda: |-
+            id(servo_position).publish_state(id(servo_position).state - 5.0);
+        - delay: 150ms
+        
+        # Complete movement to final position
+        - lambda: |-
+            id(servo_position).publish_state(id(quick_servo_return));
+        # Wait for 3 seconds
+        - delay: 3s
+        # Return to the starting position
         - lambda: |-
             id(servo_position).publish_state(id(quick_servo_target));
