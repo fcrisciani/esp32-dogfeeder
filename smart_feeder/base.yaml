@@ -65,8 +65,8 @@ number:
     id: servo_position
     # Minimum slider valueue: -100
     step: 1 slider value
-    min_value: -100
-    max_value: 100
+    min_value: -100.
+    max_value: 100.
     on_value:
       - servo.write: 
           id: my_servo
@@ -75,10 +75,10 @@ number:
   - platform: template
     name: "Quick Servo Target Position"
     id: quick_servo_target
-    min_value: -100
-    max_value: 100
+    min_value: -100.
+    max_value: 100.
     step: 1
-    initial_value: 80
+    initial_value: 80.
     optimistic: false  # Let ESPHome handle the state
     on_value:
       - lambda: |-
@@ -88,10 +88,10 @@ number:
   - platform: template
     name: "Quick Servo Return Position"
     id: quick_servo_return
-    min_value: -100
-    max_value: 100
+    min_value: -100.
+    max_value: 100.
     step: 1
-    initial_value: -90
+    initial_value: -90.
     optimistic: false  # Let ESPHome handle the state
     on_value:
       - lambda: |-
@@ -100,10 +100,10 @@ number:
   - platform: template
     name: "Quick Servo wiggle"
     id: quick_servo_wiggle
-    min_value: -100
-    max_value: 100
+    min_value: -100.
+    max_value: 100.
     step: 1
-    initial_value: -60
+    initial_value: -60.
     optimistic: false  # Let ESPHome handle the state
     on_value:
       - lambda: |-
