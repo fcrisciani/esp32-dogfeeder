@@ -45,8 +45,6 @@ ota:
 servo:
   - id: my_servo
     output: pwm_output
-    min_level: -1.0
-    max_level: 1.0
     restore: true  # Add this to remember last position on restart
 
 # Example output platform
