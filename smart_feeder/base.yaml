@@ -6,7 +6,7 @@ substitutions:
 # Include other configuration files
 packages:
   scoop: !include scoop.yaml
-  schedules: !include schedules.yaml
+  #schedules: !include schedules.yaml
 
 # ESPHome configuration
 esphome:
