@@ -99,6 +99,18 @@ number:
       - lambda: |-
           id(quick_servo_return) = x;
           id(quick_servo_return).publish_state(x);
+  - platform: template
+    name: "Quick Servo wiggle"
+    id: quick_servo_wiggle
+    min_value: -100
+    max_value: 100
+    step: 1
+    initial_value: -60
+    optimistic: false  # Let ESPHome handle the state
+    on_value:
+      - lambda: |-
+          id(quick_servo_wiggle) = x;
+          id(quick_servo_wiggle).publish_state(x);
 
 # Sync time with Home Assistant.n_value:
 time:

@@ -7,16 +7,25 @@ button:
       then:
         # Reset position to -100 at the start
         - lambda: |-
-            id(servo_position).publish_state(-100.0);
+            float return_pos = id(quick_servo_return);
+            id(servo_position).publish_state(return_pos);
         # Repeat 200 times to increment the position
         - repeat:
-            count: 200
+            count: 80
             then:
               - lambda: |-
-                  // Simplified calculation: just add 1 to current position
-                  float position = id(servo_position).state + 1.0;
-                  position = std::min(position, 100.0); // Safety check
+                  float target = id(quick_servo_target);
+                  // Simplified calculation: just add 5 to current position
+                  float position = id(servo_position).state + 5.0;
+                  position = std::min(position, target); // Safety check
                   id(servo_position).publish_state(position);
+                  float quick_servo_wiggle = id(quick_servo_wiggle);
+                  // Check if position is less than quick_servo_wiggle
+                  if (position < quick_servo_wiggle) {
+                    // If position is less than quick_servo_wiggle, move to quick_servo_wiggle
+                    position -= 2.0;
+                    id(servo_position).publish_state(position);
+                  }
               # Delay to spread over 20 seconds (20s / 200 steps)
               - delay: 50ms
         # Wait for 3 seconds
@@ -26,12 +35,13 @@ button:
             id(servo_position).publish_state(100.0);
         # Repeat 200 times to decrement the position
         - repeat:
-            count: 200
+            count: 40
             then:
               - lambda: |-
-                  // Simplified calculation: just subtract 1 from current position
-                  float position = id(servo_position).state - 1.0;
-                  position = std::max(position, -100.0); // Safety check
+                  float return_pos = id(quick_servo_return);
+                  // Simplified calculation: just subtract 10 from current position
+                  float position = id(servo_position).state - 10;
+                  position = std::max(position, return_pos); // Safety check
                   id(servo_position).publish_state(position);
               # Delay to spread over 20 seconds (20s / 200 steps)
               - delay: 50ms
@@ -39,23 +49,6 @@ button:
   # Button to move servo to target position, wait, and return
   - platform: template
     name: "Move Servo and Return"
-    on_press:
-      then:
-        # Move servo to target position
-        - lambda: |-
-            float target = id(quick_servo_target);
-            // Update the servo position
-            id(servo_position).publish_state(target);
-        # Wait for 5 seconds
-        - delay: 5s
-        # Move servo back to return position
-        - lambda: |-
-            float return_pos = id(quick_servo_return);
-            // Update the servo position
-            id(servo_position).publish_state(return_pos);
-  # Button to move servo to target position, wait, and return
-  - platform: template
-    name: "Wiggle"
     on_press:
       then:
         # Move servo to target position
