@@ -112,13 +112,6 @@ number:
           id(quick_servo_wiggle) = x;
           id(quick_servo_wiggle).publish_state(x);
 
-# Sync time with Home Assistant.n_value:
-time:
-  - platform: homeassistant
-    id: homeassistant_time
-    level: !lambda ' return x / 100.0;'
-
-
 # Sync time with Home Assistant.
 time:
   - platform: homeassistant
