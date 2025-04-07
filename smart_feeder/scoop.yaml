@@ -33,13 +33,13 @@ button:
                 return id(servo_position).state < id(quick_servo_wiggle).state;
             then:
               - lambda: |-
-                  // Wiggle forward 10 degrees
-                  float pos = id(servo_position).state + 10.0;
+                  // Wiggle forward 5 degrees
+                  float pos = id(servo_position).state + 5.0;
                   id(servo_position).publish_state(pos);
               - delay: 200ms
               - lambda: |-
-                  // Wiggle back 5 degrees for net forward of 5
-                  float pos = id(servo_position).state - 5.0;
+                  // Wiggle back 2 degrees for net forward of 2
+                  float pos = id(servo_position).state - 2.0;
                   id(servo_position).publish_state(pos);
               - delay: 200ms
         # 3) Continue to quick_servo_target
