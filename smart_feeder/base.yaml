@@ -75,9 +75,9 @@ number:
     min_value: -100
     max_value: 100
     step: 1
-    initial_value: 80
+    initial_value: 80.
     optimistic: false  # Let ESPHome handle the state
-    on_value:
+    set_action:
       - lambda: |-
           id(quick_servo_target) = x;
           id(quick_servo_target).publish_state(x);
@@ -90,10 +90,11 @@ number:
     step: 1
     initial_value: -90
     optimistic: false  # Let ESPHome handle the state
-    on_value:
+    set_action:
       - lambda: |-
           id(quick_servo_return) = x;
           id(quick_servo_return).publish_state(x);
+
   - platform: template
     name: "Servo wiggle threshold"
     id: quick_servo_wiggle
@@ -102,7 +103,7 @@ number:
     step: 1
     initial_value: -60
     optimistic: false  # Let ESPHome handle the state
-    on_value:
+    set_action:
       - lambda: |-
           id(quick_servo_wiggle) = x;
           id(quick_servo_wiggle).publish_state(x);
