@@ -79,7 +79,6 @@ number:
     optimistic: false  # Let ESPHome handle the state
     set_action:
       - lambda: |-
-          id(quick_servo_target) = x;
           id(quick_servo_target).publish_state(x);
 
   - platform: template
@@ -92,7 +91,6 @@ number:
     optimistic: false  # Let ESPHome handle the state
     set_action:
       - lambda: |-
-          id(quick_servo_return) = x;
           id(quick_servo_return).publish_state(x);
 
   - platform: template
@@ -105,7 +103,6 @@ number:
     optimistic: false  # Let ESPHome handle the state
     set_action:
       - lambda: |-
-          id(quick_servo_wiggle) = x;
           id(quick_servo_wiggle).publish_state(x);
 
 # Sync time with Home Assistant.

@@ -7,13 +7,46 @@ button:
       then:
         # Move servo to target position
         - lambda: |-
-            float target = id(quick_servo_target);
+            float target = id(quick_servo_target).state;
             // Update the servo position
             id(servo_position).publish_state(target);
         # Wait for 5 seconds
         - delay: 5s
         # Move servo back to return position
         - lambda: |-
-            float return_pos = id(quick_servo_return);
+            float return_pos = id(quick_servo_return).state;
             // Update the servo position
             id(servo_position).publish_state(return_pos);
+
+  # Button to wiggle servo until threshold
+  - platform: template
+    name: "Wiggle Until Threshold"
+    on_press:
+      then:
+        # 1) Start at quick_servo_return
+        - lambda: |-
+            id(servo_position).publish_state(id(quick_servo_return).state);
+        # 2) Wiggle until servo_position passes quick_servo_wiggle
+        - while:
+            condition: |-
+              // Continue as long as current position is less than wiggle threshold
+              return id(servo_position).state < id(quick_servo_wiggle).state;
+            then:
+              - lambda: |-
+                  // Wiggle forward 10 degrees
+                  float pos = id(servo_position).state + 10.0;
+                  id(servo_position).publish_state(pos);
+              - delay: 200ms
+              - lambda: |-
+                  // Wiggle back 5 degrees for net forward of 5
+                  float pos = id(servo_position).state - 5.0;
+                  id(servo_position).publish_state(pos);
+              - delay: 200ms
+        # 3) Continue to quick_servo_target
+        - lambda: |-
+            id(servo_position).publish_state(id(quick_servo_target).state);
+        # 4) Wait 5s
+        - delay: 5s
+        # 5) Return back to quick_servo_return
+        - lambda: |-
+            id(servo_position).publish_state(id(quick_servo_return).state);
