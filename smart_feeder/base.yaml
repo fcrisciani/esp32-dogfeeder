@@ -54,29 +54,26 @@ output:
     id: pwm_output
     pin: GPIO27
     frequency: 50 Hz
-    # Add these for more precise control
-    min_power: 0.03  # 3% duty cycle (typical servo min is ~1ms out of 20ms)
-    max_power: 0.12  # 12% duty cycle (typical servo max is ~2ms out of 20ms)
 
 # Slider configuration for controlling servo position
 number:
   - platform: template
-    name: "Servo Position"
+    name: "Servo Current Position"
     id: servo_position
     # Minimum slider valueue: -100
-    step: 1 slider value
-    min_value: -100.
-    max_value: 100.
+    step: 1
+    min_value: -100
+    max_value: 100
     on_value:
       - servo.write: 
           id: my_servo
           level: !lambda ' return x / 100.0;'
     optimistic: True
   - platform: template
-    name: "Quick Servo Target Position"
+    name: "Servo Target Position"
     id: quick_servo_target
-    min_value: -100.
-    max_value: 100.
+    min_value: -100
+    max_value: 100
     step: 1
     initial_value: 80.
     optimistic: false  # Let ESPHome handle the state
@@ -86,24 +83,24 @@ number:
           id(quick_servo_target).publish_state(x);
 
   - platform: template
-    name: "Quick Servo Return Position"
+    name: "Servo Return Position"
     id: quick_servo_return
-    min_value: -100.
-    max_value: 100.
+    min_value: -100
+    max_value: 100
     step: 1
-    initial_value: -90.
+    initial_value: -90
     optimistic: false  # Let ESPHome handle the state
     on_value:
       - lambda: |-
           id(quick_servo_return) = x;
           id(quick_servo_return).publish_state(x);
   - platform: template
-    name: "Quick Servo wiggle"
+    name: "Servo wiggle threshold"
     id: quick_servo_wiggle
-    min_value: -100.
-    max_value: 100.
+    min_value: -100
+    max_value: 100
     step: 1
-    initial_value: -60.
+    initial_value: -60
     optimistic: false  # Let ESPHome handle the state
     on_value:
       - lambda: |-
