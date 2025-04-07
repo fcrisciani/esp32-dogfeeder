@@ -34,12 +34,12 @@ button:
             then:
               - lambda: |-
                   // Wiggle forward 5 degrees
-                  float pos = id(servo_position).state + 8.0;
+                  float pos = id(servo_position).state + 10.0;
                   id(servo_position).publish_state(pos);
               - delay: 200ms
               - lambda: |-
-                  // Wiggle back 2 degrees for net forward of 2
-                  float pos = id(servo_position).state - 4.0;
+                  // Wiggle back 6 degrees for net forward of 4
+                  float pos = id(servo_position).state - 6.0;
                   id(servo_position).publish_state(pos);
               - delay: 200ms
         # 3) Continue to quick_servo_target
