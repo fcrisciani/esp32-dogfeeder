@@ -75,7 +75,7 @@ number:
     min_value: -100
     max_value: 100
     step: 1
-    initial_value: 80.
+    initial_value: 80
     optimistic: false  # Let ESPHome handle the state
     on_value:
       - lambda: |-
