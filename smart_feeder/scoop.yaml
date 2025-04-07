@@ -28,9 +28,9 @@ button:
             id(servo_position).publish_state(id(quick_servo_return).state);
         # 2) Wiggle until servo_position passes quick_servo_wiggle
         - while:
-            condition: |-
-              // Continue as long as current position is less than wiggle threshold
-              return id(servo_position).state < id(quick_servo_wiggle).state;
+            condition:
+              lambda: |-
+                return id(servo_position).state < id(quick_servo_wiggle).state;
             then:
               - lambda: |-
                   // Wiggle forward 10 degrees
