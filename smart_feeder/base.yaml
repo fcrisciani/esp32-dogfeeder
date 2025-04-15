@@ -95,7 +95,13 @@ number:
   - platform: homeassistant
     name: "Servo Wiggle Range HA"  # Updated name for clarity
     id: servo_wiggle_range
-    entity_id: input_number.servo_wiggle_range # New HA helper entity_id
+    entity_id: input_number.servo_wiggle_range # HA helper entity_id
+
+   # Use Home Assistant helper for Servo Wiggle Shakes (Count)
+  - platform: homeassistant
+    name: "Servo Wiggle Shakes HA"
+    id: servo_wiggle_shakes # ID to reference in ESPHome
+    entity_id: input_number.servo_wiggle_shakes # HA helper entity_id
 
 # Sync time with Home Assistant.
 time:

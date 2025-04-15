@@ -8,14 +8,14 @@ button:
         # Move servo to target position using the state from the HA helper
         - lambda: |-
             float target = id(servo_target).state; // Use .state for HA entities
-            // Update the servo position
+            // Update the servo position state
             id(servo_position).publish_state(target);
         # Wait for 5 seconds
         - delay: 5s
         # Move servo back to return position using the state from the HA helper
         - lambda: |-
             float return_pos = id(servo_return).state; // Use .state for HA entities
-            // Update the servo position
+            // Update the servo position state
             id(servo_position).publish_state(return_pos);
 
   # Button to wiggle servo until threshold
@@ -33,14 +33,14 @@ button:
                 return id(servo_position).state < id(servo_wiggle).state; // Updated to use servo_wiggle
             then:
               - lambda: |-
-                  // Wiggle forward 5 degrees
+                  // Wiggle forward 10 degrees (adjust as needed)
                   float pos = id(servo_position).state + 10.0;
-                  id(servo_position).publish_state(pos);
+                  id(servo_position).publish_state(std::min(100.0f, pos)); // Clamp max
               - delay: 200ms
               - lambda: |-
-                  // Wiggle back 6 degrees for net forward of 4
+                  // Wiggle back 6 degrees (adjust as needed)
                   float pos = id(servo_position).state - 6.0;
-                  id(servo_position).publish_state(pos);
+                  id(servo_position).publish_state(std::max(-100.0f, pos)); // Clamp min
               - delay: 200ms
         # 3) Continue to servo_target
         - lambda: |-
@@ -50,3 +50,35 @@ button:
         # 5) Return back to servo_return
         - lambda: |-
             id(servo_position).publish_state(id(servo_return).state);
+
+  # Button to trigger the servo wiggle using a repeat loop and publish_state
+  - platform: template
+    name: "Wiggle Servo (Repeat)" # Renamed for clarity
+    id: wiggle_servo_button_repeat
+    on_press:
+      then:
+        # Repeat the wiggle based on the HA helper value
+        - repeat:
+            # Use a lambda to get the count dynamically
+            count: !lambda 'return (int)id(servo_wiggle_shakes).state;'
+            then:
+              # Move to the lower wiggle position using publish_state
+              - lambda: |-
+                  float return_pos = id(servo_return).state;
+                  float wiggle_amplitude = id(servo_wiggle_range).state;
+                  // Calculate lower position, clamp between -100 and 100
+                  float pos1 = std::max(-100.0f, std::min(100.0f, (return_pos - wiggle_amplitude / 2.0f)));
+                  id(servo_position).publish_state(pos1);
+              - delay: 100ms # Adjust delay as needed
+
+              # Move to the upper wiggle position using publish_state
+              - lambda: |-
+                  float return_pos = id(servo_return).state;
+                  float wiggle_amplitude = id(servo_wiggle_range).state;
+                  // Calculate upper position, clamp between -100 and 100
+                  float pos2 = std::max(-100.0f, std::min(100.0f, (return_pos + wiggle_amplitude / 2.0f)));
+                  id(servo_position).publish_state(pos2);
+              - delay: 100ms # Adjust delay as needed
+
+        # After the loop finishes, return servo to the defined return position using publish_state
+        - lambda: 'id(servo_position).publish_state(id(servo_return).state);'
