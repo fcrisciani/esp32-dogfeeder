@@ -49,7 +49,7 @@ button:
 
   # Button to trigger the servo wiggle using a repeat loop and publish_state
   - platform: template
-    name: "Wiggle Servo (Repeat)"
+    name: "Wiggle Servo"
     id: wiggle_servo_button_repeat
     on_press:
       then:
