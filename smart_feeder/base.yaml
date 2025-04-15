@@ -63,45 +63,36 @@ number:
   - platform: template
     name: "Servo Current Position"
     id: servo_position
-    # Minimum slider valueue: -100
-    step: 1
     min_value: -100
     max_value: 100
+    step: 1
+    initial_value: -100
+    optimistic: true
     on_value:
-      - servo.write: 
+      - servo.write:
           id: my_servo
-          level: !lambda ' return x / 100.0;'
-    optimistic: True
-
-  # Use Home Assistant helper for Servo Target Position
+          level: !lambda 'return x / 100.0;'
+  # Home Assistant helpers
   - platform: homeassistant
-    name: "Servo Target Position HA" # Name used within ESPHome logs/UI
-    id: servo_target # Keep ID for referencing in lambdas
-    entity_id: input_number.servo_target # HA helper entity_id
-
-  # Use Home Assistant helper for Servo Return Position
+    name: "Servo Target Position"
+    id: servo_target
+    entity_id: input_number.servo_target
   - platform: homeassistant
-    name: "Servo Return Position HA"
+    name: "Servo Return Position"
     id: servo_return
-    entity_id: input_number.servo_return # HA helper entity_id
-
-  # Use Home Assistant helper for Servo Wiggle Threshold
+    entity_id: input_number.servo_return
   - platform: homeassistant
-    name: "Servo Wiggle Threshold HA"
+    name: "Servo Wiggle Threshold"
     id: servo_wiggle
-    entity_id: input_number.servo_wiggle_stop # HA helper entity_id
-  
-   # Use Home Assistant helper for Servo Wiggle Range
+    entity_id: input_number.servo_wiggle_stop
   - platform: homeassistant
-    name: "Servo Wiggle Range HA"  # Updated name for clarity
+    name: "Servo Wiggle Range"
     id: servo_wiggle_range
-    entity_id: input_number.servo_wiggle_range # HA helper entity_id
-
-   # Use Home Assistant helper for Servo Wiggle Shakes (Count)
+    entity_id: input_number.servo_wiggle_range
   - platform: homeassistant
-    name: "Servo Wiggle Shakes HA"
-    id: servo_wiggle_shakes # ID to reference in ESPHome
-    entity_id: input_number.servo_wiggle_shakes # HA helper entity_id
+    name: "Servo Wiggle Shakes"
+    id: servo_wiggle_shakes
+    entity_id: input_number.servo_wiggle_shakes
 
 # Sync time with Home Assistant.
 time:
