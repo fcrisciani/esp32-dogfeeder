@@ -36,6 +36,9 @@ captive_portal:
 # Enable Home Assistant API for integration
 api:
 
+# Enable Bluetooth Proxy feature
+bluetooth_proxy:
+
 # Enable OTA updates for firmware updates
 ota:
   # Specify OTA platform
@@ -75,7 +78,7 @@ number:
     min_value: -100
     max_value: 100
     step: 1
-    initial_value: 80.
+    initial_value: 80
     optimistic: false  # Let ESPHome handle the state
     set_action:
       - lambda: |-
