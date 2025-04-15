@@ -72,41 +72,30 @@ number:
           id: my_servo
           level: !lambda ' return x / 100.0;'
     optimistic: True
-  - platform: template
-    name: "Servo Target Position"
-    id: quick_servo_target
-    min_value: -100
-    max_value: 100
-    step: 1
-    initial_value: 80
-    optimistic: false  # Let ESPHome handle the state
-    set_action:
-      - lambda: |-
-          id(quick_servo_target).publish_state(x);
 
-  - platform: template
-    name: "Servo Return Position"
-    id: quick_servo_return
-    min_value: -100
-    max_value: 100
-    step: 1
-    initial_value: -90
-    optimistic: false  # Let ESPHome handle the state
-    set_action:
-      - lambda: |-
-          id(quick_servo_return).publish_state(x);
+  # Use Home Assistant helper for Servo Target Position
+  - platform: homeassistant
+    name: "Servo Target Position HA" # Name used within ESPHome logs/UI
+    id: servo_target # Keep ID for referencing in lambdas
+    entity_id: input_number.servo_target # HA helper entity_id
 
-  - platform: template
-    name: "Servo wiggle threshold"
-    id: quick_servo_wiggle
-    min_value: -100
-    max_value: 100
-    step: 1
-    initial_value: -60
-    optimistic: false  # Let ESPHome handle the state
-    set_action:
-      - lambda: |-
-          id(quick_servo_wiggle).publish_state(x);
+  # Use Home Assistant helper for Servo Return Position
+  - platform: homeassistant
+    name: "Servo Return Position HA"
+    id: servo_return
+    entity_id: input_number.servo_return # HA helper entity_id
+
+  # Use Home Assistant helper for Servo Wiggle Threshold
+  - platform: homeassistant
+    name: "Servo Wiggle Threshold HA"
+    id: servo_wiggle
+    entity_id: input_number.servo_wiggle_stop # HA helper entity_id
+  
+   # Use Home Assistant helper for Servo Wiggle Range
+  - platform: homeassistant
+    name: "Servo Wiggle Range HA"  # Updated name for clarity
+    id: servo_wiggle_range
+    entity_id: input_number.servo_wiggle_range # New HA helper entity_id
 
 # Sync time with Home Assistant.
 time:

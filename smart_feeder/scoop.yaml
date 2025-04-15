@@ -5,16 +5,16 @@ button:
     name: "Move Servo and Return"
     on_press:
       then:
-        # Move servo to target position
+        # Move servo to target position using the state from the HA helper
         - lambda: |-
-            float target = id(quick_servo_target).state;
+            float target = id(servo_target).state; // Use .state for HA entities
             // Update the servo position
             id(servo_position).publish_state(target);
         # Wait for 5 seconds
         - delay: 5s
-        # Move servo back to return position
+        # Move servo back to return position using the state from the HA helper
         - lambda: |-
-            float return_pos = id(quick_servo_return).state;
+            float return_pos = id(servo_return).state; // Use .state for HA entities
             // Update the servo position
             id(servo_position).publish_state(return_pos);
 
@@ -23,14 +23,14 @@ button:
     name: "Wiggle Until Threshold"
     on_press:
       then:
-        # 1) Start at quick_servo_return
+        # 1) Start at servo_return
         - lambda: |-
-            id(servo_position).publish_state(id(quick_servo_return).state);
-        # 2) Wiggle until servo_position passes quick_servo_wiggle
+            id(servo_position).publish_state(id(servo_return).state); // Use .state for HA entities
+        # 2) Wiggle until servo_position passes servo_wiggle
         - while:
             condition:
               lambda: |-
-                return id(servo_position).state < id(quick_servo_wiggle).state;
+                return id(servo_position).state < id(servo_wiggle).state; // Updated to use servo_wiggle
             then:
               - lambda: |-
                   // Wiggle forward 5 degrees
@@ -42,11 +42,11 @@ button:
                   float pos = id(servo_position).state - 6.0;
                   id(servo_position).publish_state(pos);
               - delay: 200ms
-        # 3) Continue to quick_servo_target
+        # 3) Continue to servo_target
         - lambda: |-
-            id(servo_position).publish_state(id(quick_servo_target).state);
+            id(servo_position).publish_state(id(servo_target).state); // Updated to use servo_target
         # 4) Wait 5s
         - delay: 5s
-        # 5) Return back to quick_servo_return
+        # 5) Return back to servo_return
         - lambda: |-
-            id(servo_position).publish_state(id(quick_servo_return).state);
+            id(servo_position).publish_state(id(servo_return).state);

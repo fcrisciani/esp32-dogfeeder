@@ -12,14 +12,15 @@ automation:
         at: "07:00:00"
     action:
       - lambda: |-
-          // For globals, we access directly without .state
-          float target = id(quick_servo_target);
+          // Use .state to get the current value from the HA helper
+          float target = id(servo_target).state;
           id(servo_position).publish_state(target);
       - delay: 5s
       - lambda: |-
-          float return_pos = id(quick_servo_return);
+          // Use .state to get the current value from the HA helper
+          float return_pos = id(servo_return).state;
           id(servo_position).publish_state(return_pos);
-      
+
   - id: evening_feed
     description: "Evening feeding time"
     trigger:
@@ -27,9 +28,11 @@ automation:
         at: "18:00:00"
     action:
       - lambda: |-
-          float target = id(quick_servo_target);
+          // Use .state to get the current value from the HA helper
+          float target = id(quick_servo_target).state;
           id(servo_position).publish_state(target);
       - delay: 5s
       - lambda: |-
-          float return_pos = id(quick_servo_return);
+          // Use .state to get the current value from the HA helper
+          float return_pos = id(quick_servo_return).state;
           id(servo_position).publish_state(return_pos);
